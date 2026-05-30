@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextclean-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./src:/var/www/html
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - nextclean_shared_network
+    depends_on:
+      - db
+      - redis
+
+  webserver:
+    image: nginx:alpine
+    container_name: nextclean-webserver
+    restart: unless-stopped
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - nextclean_shared_network
+    depends_on:
+      - app
+
+  db:
+    image: postgres:15-alpine
+    container_name: nextclean-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-nextclean}
+      POSTGRES_USER: ${DB_USERNAME:-nextclean}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-nextclean@2026##!!}
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - nextclean_shared_network
+
+  redis:
+    image: redis:alpine
+    container_name: nextclean-redis
+    restart: unless-stopped
+    networks:
+      - nextclean_shared_network
+
+  queue-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextclean-worker
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: php artisan queue:work --tries=3 --timeout=90
+    volumes:
+      - ./src:/var/www/html
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - nextclean_shared_network
+    depends_on:
+      - db
+      - redis
+
+  cron-scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextclean-cron
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: sh -c "while [ true ]; do php artisan schedule:run --verbose --no-interaction & sleep 60; done"
+    volumes:
+      - ./src:/var/www/html
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - nextclean_shared_network
+    depends_on:
+      - db
+      - redis
+
+networks:
+  nextclean_shared_network:
+    name: nextclean_shared_network
+    driver: bridge
+
+volumes:
+  dbdata:
