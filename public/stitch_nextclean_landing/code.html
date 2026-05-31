@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NextClean - Sistem Manajemen Laundry Modern</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#454747",
+                        "surface-container": "#edeeef",
+                        "surface-container-high": "#e7e8e9",
+                        "inverse-primary": "#ffb1c7",
+                        "on-surface-variant": "#5a3f47",
+                        "surface-container-low": "#f3f4f5",
+                        "on-primary-fixed-variant": "#8e0049",
+                        "outline-variant": "#e2bdc6",
+                        "on-primary-container": "#fff0f2",
+                        "background": "#f8f9fa",
+                        "tertiary": "#4d5769",
+                        "surface-dim": "#d9dadb",
+                        "primary-fixed": "#ffd9e2",
+                        "surface-tint": "#b90062",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e1e3e4",
+                        "tertiary-fixed": "#d9e3f9",
+                        "on-surface": "#191c1d",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#e2e2e2",
+                        "on-secondary-container": "#616363",
+                        "on-primary-fixed": "#3e001d",
+                        "surface-variant": "#e1e3e4",
+                        "secondary": "#5d5f5f",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#2e3132",
+                        "primary-fixed-dim": "#ffb1c7",
+                        "on-tertiary-fixed": "#121c2c",
+                        "tertiary-container": "#656f82",
+                        "tertiary-fixed-dim": "#bdc7dc",
+                        "on-tertiary-container": "#eff3ff",
+                        "secondary-fixed-dim": "#c6c6c7",
+                        "on-secondary-fixed": "#1a1c1c",
+                        "on-primary": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "secondary-container": "#dfe0e0",
+                        "primary-container": "#d80073",
+                        "on-tertiary-fixed-variant": "#3d4759",
+                        "on-error": "#ffffff",
+                        "outline": "#8e6f77",
+                        "on-background": "#191c1d",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f8f9fa",
+                        "primary": "#ab005a",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.5rem",
+                        "xl": "0.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "1rem",
+                        "gutter": "1.5rem",
+                        "stack-lg": "2rem",
+                        "container-max": "1440px",
+                        "stack-sm": "0.5rem",
+                        "margin-page": "2rem",
+                        "sidebar-width": "260px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter", "sans-serif"],
+                        "headline-sm": ["Inter", "sans-serif"],
+                        "headline-md": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "display-lg": ["Inter", "sans-serif"],
+                        "body-sm": ["Inter", "sans-serif"],
+                        "label-sm": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["13px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-lg antialiased overflow-x-hidden">
+<!-- Top Navigation -->
+<header class="bg-surface border-b border-outline-variant flex justify-between items-center w-full px-margin-page h-16 fixed top-0 z-50 transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">local_laundry_service</span>
+<span class="text-headline-md font-headline-md font-extrabold text-primary tracking-tight">NextClean</span>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-secondary font-label-md text-label-md hover:text-primary transition-colors" href="#fitur">Fitur</a>
+<a class="text-secondary font-label-md text-label-md hover:text-primary transition-colors" href="#manfaat">Manfaat</a>
+</nav>
+<div class="flex items-center">
+<a class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md px-6 py-2 rounded-lg transition-colors shadow-sm" href="#">Coba Gratis</a>
+</div>
+</header>
+<main class="pt-24 pb-20">
+<!-- Hero Section -->
+<section class="max-w-container-max mx-auto px-margin-page pt-16 pb-24 lg:pt-24 lg:pb-32">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div class="flex flex-col gap-8">
+<h1 class="text-display-lg font-display-lg text-on-surface lg:text-[56px] lg:leading-[64px] tracking-tight">
+                        Manajemen Laundry Modern, <span class="text-primary">Efisien &amp; Cepat</span>
+</h1>
+<p class="text-body-lg font-body-lg text-secondary max-w-xl text-lg">
+                        NextClean membantu Anda mengelola bisnis laundry dengan lebih mudah. Dari kasir POS hingga laporan keuangan otomatis, semua dalam satu sistem terintegrasi.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-6 pt-4">
+<a class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md px-8 py-4 rounded-lg text-center transition-colors shadow-sm inline-flex items-center justify-center gap-2 h-14 text-base" href="#">
+                            Mulai Sekarang <span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+<a class="bg-surface border border-outline-variant hover:bg-surface-container text-on-surface font-label-md text-label-md px-8 py-4 rounded-lg text-center transition-colors inline-flex items-center justify-center h-14 text-base" href="#fitur">
+                            Pelajari Fitur
+                        </a>
+</div>
+</div>
+<div class="relative w-full h-[450px] lg:h-[550px] rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-outline-variant bg-white">
+<img alt="Dashboard Mockup" class="w-full h-full object-cover object-top" data-alt="A highly detailed, professional mockup of a modern SaaS dashboard interface displayed on a high-end laptop screen. The UI design is clean, corporate, and minimalist, utilizing a pristine white background with vibrant magenta accents. The dashboard shows clear data charts, a sidebar navigation menu, and numerical stat cards. The laptop sits on a sleek, clutter-free desk with soft, high-key ambient lighting, conveying a sense of efficiency, trust, and advanced technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCro01jmz2zUH0gTTZNs3fhWGqmA7eLu4VUAnvZNB5meo-JOQyVHjMxzsGeQmceccgXgRI-I5E1DV2bCTepBKj-hsgxBCyqiDHq9Gc-_fKpP16PvtZDKul455TD0NzuJQPLMXjgeQOeUsmk9FMC1Lkas1nSzwIAyKsCyeKU6NHHQ1225m8CKDubFWVN6rIoD5UZp435gFEtHjPoG5wiMamavGbhjbhXf4-B-SRWbITiTw52TPNWWQWd26ACFnD99Zu7OXhRxLuxRMI"/>
+</div>
+</div>
+</section>
+<!-- Logo Cloud -->
+<section class="border-t border-outline-variant bg-surface py-12">
+<div class="max-w-container-max mx-auto px-margin-page text-center">
+<p class="text-label-md font-label-md text-secondary uppercase tracking-widest mb-8">Dipercaya oleh 500+ Bisnis Laundry di Seluruh Indonesia</p>
+<div class="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-60 grayscale hover:grayscale-0 transition-all duration-300">
+<span class="text-2xl font-bold font-headline-md text-on-surface">FreshWash</span>
+<span class="text-2xl font-bold font-headline-md text-on-surface">KlinKita</span>
+<span class="text-2xl font-bold font-headline-md text-on-surface">LaundryPro</span>
+<span class="text-2xl font-bold font-headline-md text-on-surface">BeningLaundry</span>
+<span class="text-2xl font-bold font-headline-md text-on-surface">CepatBersih</span>
+</div>
+</div>
+</section>
+<!-- Features Section -->
+<section class="bg-surface-container-low py-24 lg:py-32 border-y border-outline-variant" id="fitur">
+<div class="max-w-container-max mx-auto px-margin-page">
+<div class="text-center max-w-3xl mx-auto mb-20">
+<h2 class="text-display-lg font-display-lg text-on-surface mb-6 lg:text-[40px]">Fitur Utama</h2>
+<p class="text-body-lg font-body-lg text-secondary text-lg">Semua alat yang Anda butuhkan untuk menjalankan bisnis laundry profesional dengan skala apapun.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Feature Card 1 -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant hover:border-primary/50 transition-colors shadow-sm hover:shadow-md">
+<div class="w-14 h-14 bg-primary-fixed rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">list_alt</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-3">Manajemen Pesanan</h3>
+<p class="text-body-md font-body-md text-secondary leading-relaxed">Lacak status cucian dari penerimaan hingga pengambilan dengan sistem barcode yang akurat.</p>
+</div>
+<!-- Feature Card 2 -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant hover:border-primary/50 transition-colors shadow-sm hover:shadow-md">
+<div class="w-14 h-14 bg-primary-fixed rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">point_of_sale</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-3">Kasir POS Terintegrasi</h3>
+<p class="text-body-md font-body-md text-secondary leading-relaxed">Proses transaksi cepat dengan dukungan berbagai metode pembayaran digital dan cetak struk.</p>
+</div>
+<!-- Feature Card 3 -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant hover:border-primary/50 transition-colors shadow-sm hover:shadow-md">
+<div class="w-14 h-14 bg-primary-fixed rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">monitoring</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-3">Laporan Otomatis</h3>
+<p class="text-body-md font-body-md text-secondary leading-relaxed">Pantau pendapatan harian, mingguan, dan bulanan dengan visualisasi grafik yang mudah dipahami.</p>
+</div>
+<!-- Feature Card 4 -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant hover:border-primary/50 transition-colors shadow-sm hover:shadow-md">
+<div class="w-14 h-14 bg-primary-fixed rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">group</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-3">Manajemen Pelanggan</h3>
+<p class="text-body-md font-body-md text-secondary leading-relaxed">Simpan data pelanggan, berikan poin loyalitas, dan kirim notifikasi otomatis via WhatsApp.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Business Benefits Section -->
+<section class="py-24 lg:py-32 max-w-container-max mx-auto px-margin-page" id="manfaat">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div class="order-2 lg:order-1 relative w-full h-[500px] rounded-2xl overflow-hidden bg-primary-fixed-dim">
+<div class="absolute inset-0 flex items-center justify-center p-8">
+<div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md transform -rotate-2">
+<div class="flex justify-between items-center mb-6 border-b pb-4">
+<span class="font-bold text-lg text-on-surface">Omzet Bulanan</span>
+<span class="text-primary font-bold">+45%</span>
+</div>
+<div class="space-y-4">
+<div class="h-4 bg-surface-container rounded-full w-full"></div>
+<div class="h-4 bg-surface-container rounded-full w-5/6"></div>
+<div class="h-4 bg-surface-container rounded-full w-4/6"></div>
+<div class="flex justify-between pt-4">
+<div class="w-1/2 pr-2">
+<div class="h-20 bg-primary/20 rounded-lg flex items-end p-2"><div class="w-full bg-primary h-1/2 rounded-md"></div></div>
+</div>
+<div class="w-1/2 pl-2">
+<div class="h-20 bg-primary/20 rounded-lg flex items-end p-2"><div class="w-full bg-primary h-full rounded-md"></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="order-1 lg:order-2 flex flex-col gap-8">
+<div>
+<span class="text-primary font-label-md tracking-widest uppercase mb-4 block">Mengapa Memilih NextClean?</span>
+<h2 class="text-display-lg font-display-lg text-on-surface mb-6 lg:text-[40px] leading-tight">Skalakan Bisnis Laundry Anda dengan Pasti</h2>
+<p class="text-body-lg font-body-lg text-secondary text-lg">
+                    Tinggalkan pencatatan manual yang membingungkan. NextClean dirancang khusus untuk mempercepat operasional, mengurangi kesalahan, dan meningkatkan kepuasan pelanggan Anda.
+                </p>
+</div>
+<div class="space-y-8 mt-4">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary">trending_up</span>
+</div>
+<div>
+<h4 class="text-headline-sm font-headline-sm text-on-surface mb-2">Tingkatkan ROI secara Signifikan</h4>
+<p class="text-body-md font-body-md text-secondary">Optimalkan proses penerimaan hingga pengambilan cucian, memungkinkan Anda melayani lebih banyak pelanggan setiap harinya tanpa menambah karyawan.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary">speed</span>
+</div>
+<div>
+<h4 class="text-headline-sm font-headline-sm text-on-surface mb-2">Efisiensi Operasional 10x Lipat</h4>
+<p class="text-body-md font-body-md text-secondary">Notifikasi otomatis dan laporan real-time menghemat berjam-jam waktu admin Anda setiap minggu, sehingga Anda bisa fokus pada ekspansi bisnis.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary">verified_user</span>
+</div>
+<div>
+<h4 class="text-headline-sm font-headline-sm text-on-surface mb-2">Keamanan &amp; Kontrol Penuh</h4>
+<p class="text-body-md font-body-md text-secondary">Cegah kecurangan dengan sistem akses staf yang terstruktur dan pencatatan kas yang tidak bisa dimanipulasi.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="bg-primary text-on-primary py-24">
+<div class="max-w-container-max mx-auto px-margin-page text-center">
+<div class="max-w-3xl mx-auto flex flex-col items-center">
+<h2 class="text-display-lg font-display-lg mb-6 lg:text-[48px] leading-tight">Siap untuk Mengembangkan Bisnis Laundry Anda?</h2>
+<p class="text-on-primary-container text-lg mb-10 max-w-2xl">
+                Bergabunglah dengan ratusan pengusaha laundry lainnya yang telah beralih ke NextClean. Mulai sekarang, tanpa kartu kredit, batalkan kapan saja.
+            </p>
+<div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+<a class="bg-white text-primary hover:bg-surface-container-lowest font-label-md text-label-md px-10 py-4 rounded-xl text-center transition-colors shadow-lg inline-flex items-center justify-center gap-2 h-14 text-base font-bold" href="#">
+                    Mulai Uji Coba Gratis
+                </a>
+<a class="bg-primary-container/20 border border-white/30 hover:bg-primary-container/40 text-white font-label-md text-label-md px-10 py-4 rounded-xl text-center transition-colors inline-flex items-center justify-center h-14 text-base" href="#">
+                    Hubungi Tim Sales
+                </a>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface border-t border-outline-variant py-16">
+<div class="max-w-container-max mx-auto px-margin-page">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+<div class="md:col-span-2">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">local_laundry_service</span>
+<span class="text-headline-md font-headline-md font-bold text-primary tracking-tight">NextClean</span>
+</div>
+<p class="text-body-md font-body-md text-secondary max-w-sm leading-relaxed">
+                        Platform manajemen operasional laundry terdepan untuk meningkatkan efisiensi dan kepuasan pelanggan bisnis Anda.
+                    </p>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-on-surface mb-6 uppercase tracking-wider">Tautan</h4>
+<ul class="flex flex-col gap-4">
+<li><a class="text-body-md font-body-md text-secondary hover:text-primary transition-colors" href="#fitur">Fitur</a></li>
+<li><a class="text-body-md font-body-md text-secondary hover:text-primary transition-colors" href="#manfaat">Manfaat Bisnis</a></li>
+<li><a class="text-body-md font-body-md text-secondary hover:text-primary transition-colors" href="#">Panduan Pengguna</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-on-surface mb-6 uppercase tracking-wider">Kontak</h4>
+<ul class="flex flex-col gap-4">
+<li class="flex items-center gap-3 text-body-md font-body-md text-secondary">
+<span class="material-symbols-outlined text-lg">mail</span>
+                            hello@nextclean.id
+                        </li>
+<li class="flex items-center gap-3 text-body-md font-body-md text-secondary">
+<span class="material-symbols-outlined text-lg">phone</span>
+                            0812-3456-7890
+                        </li>
+<li class="flex items-center gap-3 text-body-md font-body-md text-secondary">
+<span class="material-symbols-outlined text-lg">location_on</span>
+                            Jakarta, Indonesia
+                        </li>
+</ul>
+</div>
+</div>
+<div class="border-t border-outline-variant pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-body-sm font-body-sm text-secondary">
+                    © 2024 NextClean. Hak Cipta Dilindungi.
+                </p>
+<div class="flex gap-6">
+<a class="text-body-sm font-body-sm text-secondary hover:text-primary transition-colors" href="#">Syarat &amp; Ketentuan</a>
+<a class="text-body-sm font-body-sm text-secondary hover:text-primary transition-colors" href="#">Kebijakan Privasi</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

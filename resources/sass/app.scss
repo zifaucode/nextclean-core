@@ -1,8 +1,152 @@
 // Fonts
-@import url('https://fonts.bunny.net/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL,GRAD,opsz@100..700,0..1,-50..200,20..48&display=swap');
 
 // Variables
 @import 'variables';
 
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
+
+// Custom Material Icons
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.material-symbols-outlined.filled {
+  font-variation-settings: 'FILL' 1;
+}
+
+// Custom Colors Utilities
+.bg-surface { background-color: $surface !important; }
+.bg-surface-container-low { background-color: $surface-container-low !important; }
+.bg-surface-container-lowest { background-color: $surface-container-lowest !important; }
+.bg-primary-fixed { background-color: $primary-fixed !important; }
+.bg-primary-fixed-dim { background-color: $primary-fixed-dim !important; }
+.bg-primary-container-alpha { background-color: rgba($primary-container, 0.2) !important; }
+
+.border-outline-variant { border-color: $outline-variant !important; }
+.text-on-surface { color: $on-surface !important; }
+.text-secondary { color: $secondary !important; }
+
+.hover-border-primary:hover { border-color: rgba($primary, 0.5) !important; }
+
+// Custom tweaks for Hero image
+.hero-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 20px 60px -15px rgba(0,0,0,0.1);
+  border: 1px solid $outline-variant;
+  background-color: #fff;
+
+  @include media-breakpoint-up(lg) {
+    height: 550px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+}
+
+// Navbar adjustment
+.navbar-custom {
+  background-color: rgba(248, 249, 250, 0.85); // $surface
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(226, 189, 198, 0.4); // $outline-variant
+  z-index: 1030;
+  height: 5rem;
+}
+
+body {
+  padding-top: 5rem; // for fixed navbar
+}
+
+// Custom Navbar Links
+.nav-link-custom {
+  &::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: $primary;
+    transition: width 0.3s ease;
+  }
+  &:hover::after {
+    width: 100%;
+  }
+}
+
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba($primary, 0.3) !important;
+  }
+}
+
+.logo-wrapper {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+// Logo cloud
+.logo-cloud {
+  span {
+    opacity: 0.6;
+    filter: grayscale(100%);
+    transition: all 0.3s;
+    &:hover {
+      opacity: 1;
+      filter: grayscale(0%);
+    }
+  }
+}
+
+// Buttons
+.btn-primary {
+  color: #ffffff;
+  &:hover {
+    background-color: $primary-container;
+    border-color: $primary-container;
+  }
+}
+
+// Stats graphics
+.stats-graphic {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: $primary-fixed-dim;
+
+  .stats-card {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 28rem;
+    transform: rotate(-2deg);
+  }
+}
+
+// Layout utilities mapping for Tailwind gap & margins
+.gap-8 { gap: 2rem !important; }
+.gap-16 { gap: 4rem !important; }
+.py-24 { padding-top: 6rem !important; padding-bottom: 6rem !important; }
+.py-32 { padding-top: 8rem !important; padding-bottom: 8rem !important; }
+.text-display-lg { font-size: 2.5rem; line-height: 1.2; letter-spacing: -0.02em; }
+@include media-breakpoint-up(lg) {
+  .text-display-lg { font-size: 3.5rem; }
+}

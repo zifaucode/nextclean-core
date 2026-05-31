@@ -1,7 +1,20 @@
+// Colors from DESIGN.md
+$primary: #ab005a;
+$primary-container: #d80073;
+$secondary: #5d5f5f;
+$on-surface: #191c1d;
+$surface: #f8f9fa;
+$surface-container: #edeeef;
+$surface-container-low: #f3f4f5;
+$surface-container-lowest: #ffffff;
+$outline-variant: #e2bdc6;
+$primary-fixed: #ffd9e2;
+$primary-fixed-dim: #ffb1c7;
+
 // Body
-$body-bg: #f8fafc;
+$body-bg: $surface;
+$body-color: $on-surface;
 
 // Typography
-$font-family-sans-serif: 'Nunito', sans-serif;
-$font-size-base: 0.9rem;
-$line-height-base: 1.6;
+$font-family-sans-serif: 'Inter', sans-serif;
+$font-size-base: 1rem;
