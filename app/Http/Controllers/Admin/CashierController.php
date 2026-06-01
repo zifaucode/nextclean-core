@@ -46,7 +46,10 @@ class CashierController extends Controller
 
         // Generate Member Code: CUST-YYYYMMDD-XXXX
         $date = date('Ymd');
-        $lastCustomer = \App\Models\Customer::where('member_code', 'like', "CUST-{$date}-%")->orderBy('id', 'desc')->first();
+        $lastCustomer = \App\Models\Customer::withoutGlobalScope(\App\Models\Scopes\TenantScope::class)
+                            ->where('member_code', 'like', "CUST-{$date}-%")
+                            ->orderBy('id', 'desc')
+                            ->first();
         if ($lastCustomer) {
             $lastNumber = (int) substr($lastCustomer->member_code, -4);
             $newNumber = $lastNumber + 1;

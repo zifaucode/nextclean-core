@@ -91,7 +91,7 @@ class CustomerController extends Controller
     {
         do {
             $code = 'MC-' . strtoupper(bin2hex(random_bytes(3)));
-        } while (Customer::where('member_code', $code)->exists());
+        } while (Customer::withoutGlobalScope(\App\Models\Scopes\TenantScope::class)->where('member_code', $code)->exists());
 
         return response()->json(['code' => $code]);
     }

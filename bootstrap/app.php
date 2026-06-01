@@ -16,6 +16,14 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'brand.setup' => \App\Http\Middleware\EnsureBrandIsSetup::class,
         ]);
+        
+        $middleware->redirectUsersTo(function (\Illuminate\Http\Request $request) {
+            $user = $request->user();
+            if ($user && $user->hasRole('kasir')) {
+                return route('cashier.index');
+            }
+            return '/admin/dashboard';
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

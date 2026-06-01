@@ -35,7 +35,7 @@ class LoginController extends Controller
             
             // Redirect based on role
             if ($user->hasRole('kasir')) {
-                return redirect()->intended(route('cashier.index'))
+                return redirect()->route('cashier.index')
                     ->with('success', 'Selamat datang kembali, Kasir ' . $user->name);
             }
 
