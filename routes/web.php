@@ -27,6 +27,8 @@ Route::prefix('cashier')->name('cashier.')->middleware(['auth', 'role:kasir,supe
     Route::get('/', [CashierController::class, 'index'])->name('index');
     // Kasir butuh akses untuk menyimpan transaksi
     Route::post('/transaction', [TransactionController::class, 'store'])->name('transaction.store');
+    Route::get('/transaction/{transaction}/print', [TransactionController::class, 'print'])->name('transaction.print');
+    Route::post('/customer', [CashierController::class, 'storeCustomer'])->name('customer.store');
 });
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:super-admin,admin-outlet,supervisor', 'brand.setup'])->group(function () {

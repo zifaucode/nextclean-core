@@ -35,7 +35,7 @@ class TenantScope implements Scope
                 // Assuming we can eager load or use a simple query
                 static $tenantId = null;
                 if ($tenantId === null) {
-                    $outlet = \App\Models\Outlet::find($user->outlet_id);
+                    $outlet = \App\Models\Outlet::withoutGlobalScope(self::class)->find($user->outlet_id);
                     $tenantId = $outlet ? $outlet->user_id : null;
                 }
 

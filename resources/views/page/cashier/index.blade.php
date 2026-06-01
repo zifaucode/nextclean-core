@@ -3,7 +3,18 @@
 @section('title', 'Katalog Layanan - Kasir')
 
 @push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 <style>
+    /* Select2 custom adjustments for compact size */
+    .select2-container--bootstrap-5 .select2-selection {
+        font-size: 13px;
+        min-height: calc(1.5em + .5rem + 2px);
+    }
+    .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+        padding: .25rem .75rem;
+    }
+    
     /* Service Card Custom CSS */
     .card-service {
         background-color: var(--nc-surface);
@@ -217,12 +228,19 @@
                     <!-- Customer Selection -->
                     <div class="d-flex flex-column gap-1">
                         <label class="text-uppercase text-muted" style="font-size: 11px; font-weight: 700; letter-spacing: 0.05em;">Pelanggan</label>
-                        <select name="customer_id" class="form-select form-select-sm" required style="font-size: 13px;">
-                            <option value="">-- Pilih Pelanggan --</option>
-                            @foreach($customers as $customer)
-                                <option value="{{ $customer->id }}">{{ $customer->name }} - {{ $customer->phone }}</option>
-                            @endforeach
-                        </select>
+                        <div class="d-flex gap-2">
+                            <div class="flex-grow-1">
+                                <select name="customer_id" id="customer_id" class="form-select form-select-sm select2" required style="font-size: 13px;">
+                                    <option value="">-- Pilih Pelanggan --</option>
+                                    @foreach($customers as $customer)
+                                        <option value="{{ $customer->id }}">{{ $customer->name }} - {{ $customer->phone }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#addCustomerModal" style="width: 36px; height: 36px;" title="Tambah Pelanggan Baru">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <hr class="my-1 text-muted">
@@ -284,33 +302,196 @@
         </form>
     </div>
 </div>
+
+<!-- Modal Tambah Pelanggan -->
+<div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius: 1rem;">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold text-primary" id="addCustomerModalLabel"><i class="bi bi-person-plus me-2"></i>Tambah Pelanggan Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formAddCustomer">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Nama Pelanggan</label>
+                        <input type="text" class="form-control" name="name" id="new_customer_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small text-uppercase">No. HP / WhatsApp</label>
+                        <input type="text" class="form-control" name="phone" id="new_customer_phone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Alamat</label>
+                        <textarea class="form-control" name="address" id="new_customer_address" rows="2" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-top-0 pt-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4" id="btnSaveCustomer">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    // --- Toastr Logic (Fail-Safe) ---
     document.addEventListener("DOMContentLoaded", function() {
-        if (typeof toastr !== 'undefined') {
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true,
-                "positionClass": "toast-top-right",
-                "timeOut": "3000"
-            };
+        // --- Toastr Logic (Fail-Safe) ---
+        try {
+            if (typeof toastr !== 'undefined') {
+                toastr.options = {
+                    "closeButton": true,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "timeOut": "3000"
+                };
 
-            @if(session('success'))
-                toastr.success("{{ session('success') }}");
-            @endif
+                let successMsg = `{{ session('success') ?? '' }}`;
+                if (successMsg) toastr.success(successMsg);
 
-            @if(session('error'))
-                toastr.error("{{ session('error') }}");
-            @endif
+                let errorMsg = `{{ session('error') ?? '' }}`;
+                if (errorMsg) toastr.error(errorMsg);
+            }
+        } catch(e) {
+            console.error("Toastr error: ", e);
+        }
 
-            @if($errors->any())
-                @foreach($errors->all() as $error)
-                    toastr.error("{{ $error }}");
-                @endforeach
-            @endif
+        // --- Auto Print Logic ---
+        @if(session('print_url'))
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Transaksi Berhasil!',
+                    text: 'Apakah Anda ingin mencetak struk?',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ab005a',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="bi bi-printer"></i> Cetak Struk',
+                    cancelButtonText: 'Tutup'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.open("{!! session('print_url') !!}", "CetakStruk", "width=400,height=600");
+                    }
+                });
+            } else {
+                setTimeout(() => {
+                    window.open("{!! session('print_url') !!}", "CetakStruk", "width=400,height=600");
+                }, 500);
+            }
+        @endif
+
+        // --- Select2 Initialization ---
+        try {
+            if (typeof jQuery !== 'undefined' && typeof jQuery.fn.select2 !== 'undefined') {
+                jQuery('#customer_id').select2({
+                    theme: 'bootstrap-5',
+                    width: '100%',
+                    placeholder: '-- Pilih Pelanggan --'
+                });
+            } else {
+                console.warn("Select2 or jQuery is not available.");
+            }
+        } catch (e) {
+            console.error("Select2 initialization failed:", e);
+        }
+
+        // --- Handle Add Customer AJAX via Fetch ---
+        const btnSaveCustomer = document.getElementById('btnSaveCustomer');
+        if (btnSaveCustomer) {
+            btnSaveCustomer.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                const nameInput = document.getElementById('new_customer_name');
+                const phoneInput = document.getElementById('new_customer_phone');
+                const addressInput = document.getElementById('new_customer_address');
+                const outletSelect = document.querySelector('select[name="outlet_id"]');
+                
+                const name = nameInput ? nameInput.value : '';
+                const phone = phoneInput ? phoneInput.value : '';
+                const address = addressInput ? addressInput.value : '';
+                const outlet_id = outletSelect ? outletSelect.value : '';
+                
+                // Retrieve CSRF token
+                let csrfToken = '';
+                const metaToken = document.querySelector('meta[name="csrf-token"]');
+                if (metaToken) {
+                    csrfToken = metaToken.getAttribute('content');
+                } else {
+                    const inputToken = document.querySelector('input[name="_token"]');
+                    if (inputToken) csrfToken = inputToken.value;
+                }
+
+                if(!name || !phone || !address) {
+                    if(typeof toastr !== 'undefined') toastr.warning('Harap lengkapi semua field pelanggan!');
+                    else alert('Harap lengkapi semua field pelanggan!');
+                    return;
+                }
+                
+                const originalText = btnSaveCustomer.innerHTML;
+                btnSaveCustomer.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+                btnSaveCustomer.disabled = true;
+
+                try {
+                    const response = await fetch("{{ route('cashier.customer.store') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": csrfToken,
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify({
+                            name: name,
+                            phone: phone,
+                            address: address,
+                            outlet_id: outlet_id
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.success) {
+                        if(typeof toastr !== 'undefined') toastr.success(data.message);
+                        else alert(data.message);
+                        
+                        // Add to standard select
+                        const selectEl = document.getElementById('customer_id');
+                        if (selectEl) {
+                            const newOption = new Option(data.customer.name + ' - ' + data.customer.phone, data.customer.id, true, true);
+                            selectEl.add(newOption);
+                            
+                            // Trigger Select2 update if available
+                            if (typeof jQuery !== 'undefined' && typeof jQuery.fn.select2 !== 'undefined') {
+                                jQuery(selectEl).trigger('change');
+                            }
+                        }
+                        
+                        // Reset and close modal
+                        const form = document.getElementById('formAddCustomer');
+                        if (form) form.reset();
+                        
+                        if (typeof bootstrap !== 'undefined') {
+                            const modalEl = document.getElementById('addCustomerModal');
+                            const modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                        }
+                    } else {
+                        let msg = data.message || 'Terjadi kesalahan saat menyimpan data.';
+                        if(typeof toastr !== 'undefined') toastr.error(msg);
+                        else alert(msg);
+                    }
+                } catch (error) {
+                    console.error("Error saving customer:", error);
+                    if(typeof toastr !== 'undefined') toastr.error('Terjadi kesalahan koneksi.');
+                    else alert('Terjadi kesalahan koneksi.');
+                } finally {
+                    btnSaveCustomer.innerHTML = originalText;
+                    btnSaveCustomer.disabled = false;
+                }
+            });
         }
     });
 

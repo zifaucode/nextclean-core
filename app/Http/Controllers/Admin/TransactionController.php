@@ -161,7 +161,6 @@ class TransactionController extends Controller
                 'invoice_code' => 'NC-' . strtoupper(Str::random(8)),
                 'outlet_id' => $request->outlet_id,
                 'customer_id' => $request->customer_id,
-                'user_id' => auth()->id() ?? 1, // Default fallback
                 'transaction_date' => now(),
                 'total_price' => $total_price,
                 'additional_fee' => $additional_fee,
@@ -185,7 +184,9 @@ class TransactionController extends Controller
             DB::commit();
 
             if ($request->input('source') === 'cashier') {
-                return redirect()->route('cashier.index')->with('success', 'Transaksi berhasil disimpan!');
+                return redirect()->route('cashier.index')
+                    ->with('success', 'Transaksi berhasil disimpan!')
+                    ->with('print_url', route('cashier.transaction.print', $transaction->id));
             }
 
             return redirect()->route('admin.transaction.index')->with('success', 'Transaksi berhasil disimpan.');
@@ -279,5 +280,11 @@ class TransactionController extends Controller
         $transactions = Transaction::with(['customer', 'outlet'])->orderBy('transaction_date', 'desc')->get();
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('page.admin.transaction.pdf', compact('transactions'));
         return $pdf->download('Data_Transaksi_NextClean_' . date('Ymd_His') . '.pdf');
+    }
+
+    public function print(Transaction $transaction)
+    {
+        $transaction->load(['customer', 'outlet', 'details', 'user']);
+        return view('page.cashier.print', compact('transaction'));
     }
 }

@@ -21,6 +21,18 @@ class UserController extends Controller
     {
         $query = User::with(['role', 'outlet'])->select('users.*');
 
+        $currentUser = auth()->user();
+        if ($currentUser && $currentUser->hasRole('admin-outlet')) {
+            $query->where(function($q) use ($currentUser) {
+                $q->where('users.id', $currentUser->id)
+                  ->orWhereHas('outlet', function($o) use ($currentUser) {
+                      $o->where('user_id', $currentUser->id);
+                  });
+            });
+        }
+
+        $recordsTotal = $query->count();
+
         // 1. Search Logic
         if ($request->has('search') && $request->input('search.value') != '') {
             $searchValue = $request->input('search.value');
@@ -33,7 +45,6 @@ class UserController extends Controller
             });
         }
 
-        $recordsTotal = User::count();
         $recordsFiltered = $query->count();
 
         // 2. Order Logic
@@ -92,14 +103,40 @@ class UserController extends Controller
 
     public function create()
     {
-        $roles = Role::all();
-        $outlets = Outlet::all();
+        $currentUser = auth()->user();
+        
+        if ($currentUser && $currentUser->hasRole('admin-outlet')) {
+            $roles = Role::whereNotIn('slug', ['super-admin', 'admin-outlet'])->get();
+            $outlets = Outlet::where('user_id', $currentUser->id)->get();
+        } else {
+            $roles = Role::all();
+            $outlets = Outlet::all();
+        }
+        
         return view('page.admin.user.create', compact('roles', 'outlets'));
     }
 
     public function store(UserRequest $request)
     {
         $data = $request->validated();
+        
+        $currentUser = auth()->user();
+        if ($currentUser && $currentUser->hasRole('admin-outlet')) {
+            if (!empty($data['outlet_id'])) {
+                $outlet = Outlet::find($data['outlet_id']);
+                if (!$outlet || $outlet->user_id !== $currentUser->id) {
+                    abort(403, 'Unauthorized action.');
+                }
+            }
+            
+            if (!empty($data['role_id'])) {
+                $role = Role::find($data['role_id']);
+                if ($role && in_array($role->slug, ['super-admin', 'admin-outlet'])) {
+                    abort(403, 'Unauthorized action. Cannot assign this role.');
+                }
+            }
+        }
+
         $data['password'] = Hash::make($data['password']);
 
         User::create($data);
@@ -109,14 +146,53 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $roles = Role::all();
-        $outlets = Outlet::all();
+        $currentUser = auth()->user();
+        if ($currentUser && $currentUser->hasRole('admin-outlet')) {
+            if ($user->id !== $currentUser->id) {
+                if (!$user->outlet_id || $user->outlet->user_id !== $currentUser->id) {
+                    abort(403, 'Unauthorized action.');
+                }
+            }
+            $outlets = Outlet::where('user_id', $currentUser->id)->get();
+            $roles = Role::whereNotIn('slug', ['super-admin', 'admin-outlet'])->get();
+        } else {
+            $outlets = Outlet::all();
+            $roles = Role::all();
+        }
+
         return view('page.admin.user.edit', compact('user', 'roles', 'outlets'));
     }
 
     public function update(UserRequest $request, User $user)
     {
+        $currentUser = auth()->user();
+        if ($currentUser && $currentUser->hasRole('admin-outlet')) {
+            if ($user->id !== $currentUser->id) {
+                if (!$user->outlet_id || $user->outlet->user_id !== $currentUser->id) {
+                    abort(403, 'Unauthorized action.');
+                }
+            }
+        }
+
         $data = $request->validated();
+        
+        if ($currentUser && $currentUser->hasRole('admin-outlet')) {
+            if (!empty($data['outlet_id'])) {
+                $outlet = Outlet::find($data['outlet_id']);
+                if (!$outlet || $outlet->user_id !== $currentUser->id) {
+                    abort(403, 'Unauthorized action.');
+                }
+            }
+            
+            if (!empty($data['role_id'])) {
+                $role = Role::find($data['role_id']);
+                if ($role && in_array($role->slug, ['super-admin', 'admin-outlet'])) {
+                    if (!($user->id === $currentUser->id && $user->role_id == $data['role_id'])) {
+                        abort(403, 'Unauthorized action. Cannot assign this role.');
+                    }
+                }
+            }
+        }
         
         if (!empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
@@ -131,6 +207,15 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        $currentUser = auth()->user();
+        if ($currentUser && $currentUser->hasRole('admin-outlet')) {
+            if ($user->id !== $currentUser->id) {
+                if (!$user->outlet_id || $user->outlet->user_id !== $currentUser->id) {
+                    abort(403, 'Unauthorized action.');
+                }
+            }
+        }
+
         $user->delete();
 
         return redirect()->route('admin.user.index')->with('success', 'Akun User berhasil dihapus.');
